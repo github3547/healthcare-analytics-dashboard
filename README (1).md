@@ -1,6 +1,6 @@
 # Healthcare Analytics – Power BI Dashboard Project
 
-> **A Business Analyst portfolio project** exploring patient outcomes, hospital performance, billing patterns, and department efficiency using a synthetic healthcare dataset and Power BI.
+> **A Business Analyst project** exploring patient outcomes, hospital performance, billing patterns, and department efficiency using a synthetic healthcare dataset and Power BI.
 
 ---
 
