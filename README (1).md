@@ -119,10 +119,4 @@ The Power BI report contains **4 dashboard pages**:
 ---
 
 
-**[M]**  
-Business Analyst | Data & Healthcare Analytics Enthusiast  
-📧 your.email@example.com  
-🔗 [LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourusername)
-
----
 
