@@ -1,0 +1,413 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; }
+  .db-wrap { background: #F4F6F9; padding: 0; font-family: 'Segoe UI', sans-serif; min-height: 620px; }
+  .topbar { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar-left { display: flex; align-items: center; gap: 10px; }
+  .pbi-logo { width: 22px; height: 22px; }
+  .topbar-title { font-size: 13px; font-weight: 600; color: #333; }
+  .topbar-tabs { display: flex; gap: 0; }
+  .tab { padding: 4px 14px; font-size: 11px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tab.active { color: #0D6EFD; border-bottom: 2px solid #0D6EFD; font-weight: 600; }
+  .topbar-right { display: flex; gap: 8px; align-items: center; font-size: 11px; color: #888; }
+  .filter-pill { background: #EEF2FF; color: #3730A3; border-radius: 12px; padding: 2px 10px; font-size: 10px; font-weight: 600; }
+
+  .page-title { font-size: 16px; font-weight: 700; color: #1a1a2e; padding: 10px 16px 4px; }
+  .page-sub { font-size: 10px; color: #888; padding: 0 16px 10px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 0 16px 10px; }
+  .kpi-card { background: #fff; border-radius: 8px; padding: 12px 14px; border-left: 4px solid #0D6EFD; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .kpi-card.teal { border-left-color: #17A2B8; }
+  .kpi-card.red { border-left-color: #DC3545; }
+  .kpi-card.green { border-left-color: #28A745; }
+  .kpi-card.amber { border-left-color: #FFC107; }
+  .kpi-label { font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .kpi-value { font-size: 22px; font-weight: 700; color: #1a1a2e; line-height: 1; }
+  .kpi-sub { font-size: 9px; color: #888; margin-top: 3px; }
+  .kpi-badge { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 4px; margin-top: 3px; }
+  .badge-up { background: #d4edda; color: #155724; }
+  .badge-down { background: #f8d7da; color: #721c24; }
+
+  .charts-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; padding: 0 16px 10px; }
+  .chart-card { background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .chart-title { font-size: 10px; font-weight: 600; color: #444; margin-bottom: 8px; }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 5px; }
+  .bar-row { display: flex; align-items: center; gap: 6px; }
+  .bar-label { font-size: 9px; color: #666; width: 80px; text-align: right; flex-shrink: 0; }
+  .bar-track { flex: 1; background: #F0F4F8; border-radius: 3px; height: 14px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 5px; font-size: 8px; color: #fff; font-weight: 600; }
+  .bar-val { font-size: 9px; color: #333; width: 38px; flex-shrink: 0; }
+
+  .donut-wrap { display: flex; align-items: center; gap: 10px; }
+  .donut-svg { flex-shrink: 0; }
+  .donut-legend { font-size: 9px; color: #555; display: flex; flex-direction: column; gap: 5px; }
+  .legend-row { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  .line-chart { position: relative; height: 80px; }
+  .line-svg { width: 100%; height: 100%; }
+
+  .charts-row2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 16px 10px; }
+
+  .matrix-table { width: 100%; font-size: 8.5px; border-collapse: collapse; }
+  .matrix-table th { background: #F0F4FF; color: #3730A3; font-weight: 600; padding: 4px 6px; text-align: center; font-size: 8px; }
+  .matrix-table td { padding: 3px 6px; text-align: center; color: #333; border-bottom: 0.5px solid #f0f0f0; }
+  .matrix-table tr:hover td { background: #fafafa; }
+  .heat-low { background: #DBEAFE; color: #1E40AF; }
+  .heat-mid { background: #93C5FD; color: #1E3A8A; }
+  .heat-high { background: #1D4ED8; color: #fff; }
+  .heat-xhigh { background: #1E40AF; color: #fff; }
+
+  .scatter-svg { width: 100%; height: 100px; }
+  .satis-bar { display: flex; flex-direction: column; gap: 4px; }
+  .satis-row { display: flex; align-items: center; gap: 6px; }
+  .star-label { font-size: 9px; color: #666; width: 30px; }
+  .satis-track { flex: 1; background: #F0F4F8; border-radius: 3px; height: 12px; }
+  .satis-fill { height: 100%; border-radius: 3px; }
+  .satis-count { font-size: 9px; color: #444; width: 22px; }
+
+  .footer-bar { background: #fff; border-top: 1px solid #e0e0e0; padding: 6px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #aaa; }
+  .footer-dot { width: 6px; height: 6px; border-radius: 50%; background: #28A745; display: inline-block; margin-right: 4px; }
+
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .more-link { font-size: 9px; color: #0D6EFD; }
+</style>
+
+<div class="db-wrap">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <svg class="pbi-logo" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="4" fill="#F2C811"/>
+        <rect x="5" y="18" width="5" height="9" rx="1" fill="#333"/>
+        <rect x="13" y="12" width="5" height="15" rx="1" fill="#333"/>
+        <rect x="21" y="6" width="5" height="21" rx="1" fill="#333"/>
+      </svg>
+      <span class="topbar-title">Healthcare Analytics – Executive Dashboard</span>
+    </div>
+    <div class="topbar-tabs">
+      <div class="tab active">Executive Summary</div>
+      <div class="tab">Dept &amp; Clinical</div>
+      <div class="tab">Financial</div>
+      <div class="tab">Outcomes</div>
+    </div>
+    <div class="topbar-right">
+      <span class="filter-pill">Jan–Sep 2024</span>
+      <span>All Regions</span>
+      <span>↻ Live</span>
+    </div>
+  </div>
+
+  <div class="page-title">Executive Summary</div>
+  <div class="page-sub">Hospital Network Performance · 100 Patients · Jan 2024 – Sep 2024 · 4 Regions</div>
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Patients</div>
+      <div class="kpi-value">100</div>
+      <div class="kpi-badge badge-up">+12% vs prior period</div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-label">Avg Bill (USD)</div>
+      <div class="kpi-value">$39.4K</div>
+      <div class="kpi-badge badge-up">+5.1% vs prior</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Avg Length of Stay</div>
+      <div class="kpi-value">5.8 days</div>
+      <div class="kpi-sub">Range: 1 – 10 days</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">30-Day Readmission</div>
+      <div class="kpi-value">29%</div>
+      <div class="kpi-badge badge-down">▲ 3pts vs target</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Avg Satisfaction</div>
+      <div class="kpi-value">4.0 / 5</div>
+      <div class="kpi-badge badge-up">On target</div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="charts-row">
+    <!-- Line chart: monthly admissions -->
+    <div class="chart-card">
+      <div class="section-header">
+        <div class="chart-title">Monthly Admissions Trend (2024)</div>
+        <span class="more-link">Drill →</span>
+      </div>
+      <div class="line-chart">
+        <svg class="line-svg" viewBox="0 0 340 80" preserveAspectRatio="none" role="img" aria-label="Line chart showing monthly admissions Jan to Sep 2024">
+          <defs>
+            <linearGradient id="lgFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0D6EFD" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#0D6EFD" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- Grid lines -->
+          <line x1="0" y1="15" x2="340" y2="15" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="35" x2="340" y2="35" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="55" x2="340" y2="55" stroke="#f0f0f0" stroke-width="1"/>
+          <!-- Area fill -->
+          <path d="M18,55 L55,45 L92,40 L130,50 L168,38 L205,32 L242,42 L280,28 L318,36 L318,72 L18,72 Z" fill="url(#lgFill)"/>
+          <!-- Line -->
+          <polyline points="18,55 55,45 92,40 130,50 168,38 205,32 242,42 280,28 318,36" fill="none" stroke="#0D6EFD" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <!-- Dots -->
+          <circle cx="18" cy="55" r="3" fill="#0D6EFD"/>
+          <circle cx="55" cy="45" r="3" fill="#0D6EFD"/>
+          <circle cx="92" cy="40" r="3" fill="#0D6EFD"/>
+          <circle cx="130" cy="50" r="3" fill="#0D6EFD"/>
+          <circle cx="168" cy="38" r="3" fill="#0D6EFD"/>
+          <circle cx="205" cy="32" r="3" fill="#0D6EFD"/>
+          <circle cx="242" cy="42" r="3" fill="#0D6EFD"/>
+          <circle cx="280" cy="28" r="3.5" fill="#DC3545"/>
+          <circle cx="318" cy="36" r="3" fill="#0D6EFD"/>
+          <!-- X axis labels -->
+          <text x="18" y="78" font-size="7" fill="#aaa" text-anchor="middle">Jan</text>
+          <text x="55" y="78" font-size="7" fill="#aaa" text-anchor="middle">Feb</text>
+          <text x="92" y="78" font-size="7" fill="#aaa" text-anchor="middle">Mar</text>
+          <text x="130" y="78" font-size="7" fill="#aaa" text-anchor="middle">Apr</text>
+          <text x="168" y="78" font-size="7" fill="#aaa" text-anchor="middle">May</text>
+          <text x="205" y="78" font-size="7" fill="#aaa" text-anchor="middle">Jun</text>
+          <text x="242" y="78" font-size="7" fill="#aaa" text-anchor="middle">Jul</text>
+          <text x="280" y="78" font-size="7" fill="#DC3545" text-anchor="middle" font-weight="600">Aug</text>
+          <text x="318" y="78" font-size="7" fill="#aaa" text-anchor="middle">Sep</text>
+          <!-- Peak label -->
+          <text x="280" y="22" font-size="7.5" fill="#DC3545" text-anchor="middle" font-weight="700">Peak: 14</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Donut: region -->
+    <div class="chart-card">
+      <div class="chart-title">Patients by Region</div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" width="80" height="80" viewBox="0 0 80 80" role="img" aria-label="Donut chart showing patient distribution by region">
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#e8e8e8" stroke-width="14"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#0D6EFD" stroke-width="14"
+            stroke-dasharray="44 132" stroke-dashoffset="0" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#17A2B8" stroke-width="14"
+            stroke-dasharray="35 132" stroke-dashoffset="-44" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#28A745" stroke-width="14"
+            stroke-dasharray="30 132" stroke-dashoffset="-79" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#FFC107" stroke-width="14"
+            stroke-dasharray="23 132" stroke-dashoffset="-109" transform="rotate(-90 40 40)"/>
+          <text x="40" y="37" font-size="9" fill="#333" text-anchor="middle" font-weight="700">100</text>
+          <text x="40" y="47" font-size="7" fill="#aaa" text-anchor="middle">patients</text>
+        </svg>
+        <div class="donut-legend">
+          <div class="legend-row"><div class="legend-dot" style="background:#0D6EFD"></div><span>North – 26</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:#17A2B8"></div><span>South – 27</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:#28A745"></div><span>East – 24</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:#FFC107"></div><span>West – 23</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency vs Planned -->
+    <div class="chart-card">
+      <div class="chart-title">Admission Type</div>
+      <div style="margin-bottom:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:9px;color:#555">Emergency</span>
+          <span style="font-size:9px;font-weight:700;color:#DC3545">37%</span>
+        </div>
+        <div style="background:#f0f4f8;border-radius:4px;height:16px;overflow:hidden;">
+          <div style="width:37%;height:100%;background:#DC3545;border-radius:4px;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:9px;color:#555">Planned</span>
+          <span style="font-size:9px;font-weight:700;color:#28A745">63%</span>
+        </div>
+        <div style="background:#f0f4f8;border-radius:4px;height:16px;overflow:hidden;">
+          <div style="width:63%;height:100%;background:#28A745;border-radius:4px;"></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;border-top:0.5px solid #f0f0f0;padding-top:8px;">
+        <div style="font-size:8px;color:#888;margin-bottom:3px;">Bed Type Split</div>
+        <div style="display:flex;gap:6px;">
+          <div style="text-align:center;background:#EEF2FF;border-radius:6px;padding:4px 8px;flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#3730A3">55</div>
+            <div style="font-size:8px;color:#6366F1">General</div>
+          </div>
+          <div style="text-align:center;background:#FFF7ED;border-radius:6px;padding:4px 8px;flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#92400E">30</div>
+            <div style="font-size:8px;color:#D97706">ICU</div>
+          </div>
+          <div style="text-align:center;background:#ECFDF5;border-radius:6px;padding:4px 8px;flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#065F46">15</div>
+            <div style="font-size:8px;color:#059669">Private</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="charts-row2">
+    <!-- Revenue by dept bar chart -->
+    <div class="chart-card">
+      <div class="section-header">
+        <div class="chart-title">Revenue by Department (USD)</div>
+        <span class="more-link">Sort ↕</span>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">Cardiology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%;background:#0D6EFD;">$1.15M</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Oncology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:88%;background:#17A2B8;">$1.01M</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Neurology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:58%;background:#6366F1;">$665K</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Orthopedics</div>
+          <div class="bar-track"><div class="bar-fill" style="width:47%;background:#8B5CF6;">$542K</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Gastroentero.</div>
+          <div class="bar-track"><div class="bar-fill" style="width:34%;background:#A78BFA;">$389K</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Endocrinology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:28%;background:#C4B5FD;">$322K</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Pulmonology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:24%;background:#DDD6FE;">$278K</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Gen. Medicine</div>
+          <div class="bar-track"><div class="bar-fill" style="width:10%;background:#EDE9FE;color:#6D28D9;">$118K</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Readmission by dept -->
+    <div class="chart-card">
+      <div class="chart-title">30-Day Readmission Rate by Dept</div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">Oncology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:80%;background:#DC3545;">50%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Neurology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:70%;background:#E05260;">44%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Cardiology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:60%;background:#E87080;">38%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Gastroentero.</div>
+          <div class="bar-track"><div class="bar-fill" style="width:32%;background:#FFC107;color:#000;">20%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Pulmonology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:16%;background:#28A745;">10%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Orthopedics</div>
+          <div class="bar-track"><div class="bar-fill" style="width:10%;background:#20C997;">6%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Gen. Medicine</div>
+          <div class="bar-track"><div class="bar-fill" style="width:8%;background:#d4edda;color:#155724;">5%</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Endocrinology</div>
+          <div class="bar-track"><div class="bar-fill" style="width:6%;background:#d4edda;color:#155724;">3%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Satisfaction + Insurance -->
+    <div class="chart-card">
+      <div class="chart-title">Patient Satisfaction Distribution</div>
+      <div class="satis-bar" style="margin-bottom:12px;">
+        <div class="satis-row">
+          <div class="star-label">★ 5</div>
+          <div class="satis-track"><div class="satis-fill" style="width:38%;height:100%;background:#28A745;border-radius:3px;"></div></div>
+          <div class="satis-count">38</div>
+        </div>
+        <div class="satis-row">
+          <div class="star-label">★ 4</div>
+          <div class="satis-track"><div class="satis-fill" style="width:42%;height:100%;background:#71C07C;border-radius:3px;"></div></div>
+          <div class="satis-count">42</div>
+        </div>
+        <div class="satis-row">
+          <div class="star-label">★ 3</div>
+          <div class="satis-track"><div class="satis-fill" style="width:20%;height:100%;background:#FFC107;border-radius:3px;"></div></div>
+          <div class="satis-count">20</div>
+        </div>
+        <div class="satis-row">
+          <div class="star-label">★ 2</div>
+          <div class="satis-track"><div class="satis-fill" style="width:0%;height:100%;background:#E05260;border-radius:3px;"></div></div>
+          <div class="satis-count">0</div>
+        </div>
+        <div class="satis-row">
+          <div class="star-label">★ 1</div>
+          <div class="satis-track"><div class="satis-fill" style="width:0%;height:100%;background:#DC3545;border-radius:3px;"></div></div>
+          <div class="satis-count">0</div>
+        </div>
+      </div>
+      <div style="border-top:0.5px solid #f0f0f0;padding-top:8px;">
+        <div style="font-size:8px;color:#888;margin-bottom:5px;">Avg Out-of-Pocket by Insurer</div>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:8.5px;">
+            <span style="color:#555">Cigna</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="width:50px;background:#f0f4f8;border-radius:2px;height:8px;overflow:hidden;"><div style="width:90%;height:100%;background:#DC3545;border-radius:2px;"></div></div>
+              <span style="color:#333;font-weight:600">$9.1K</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:8.5px;">
+            <span style="color:#555">Aetna</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="width:50px;background:#f0f4f8;border-radius:2px;height:8px;overflow:hidden;"><div style="width:72%;height:100%;background:#E87080;border-radius:2px;"></div></div>
+              <span style="color:#333;font-weight:600">$7.3K</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:8.5px;">
+            <span style="color:#555">BlueCross</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="width:50px;background:#f0f4f8;border-radius:2px;height:8px;overflow:hidden;"><div style="width:55%;height:100%;background:#FFC107;border-radius:2px;"></div></div>
+              <span style="color:#333;font-weight:600">$5.6K</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:8.5px;">
+            <span style="color:#555">UnitedHealth</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="width:50px;background:#f0f4f8;border-radius:2px;height:8px;overflow:hidden;"><div style="width:40%;height:100%;background:#28A745;border-radius:2px;"></div></div>
+              <span style="color:#333;font-weight:600">$4.1K</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:8.5px;">
+            <span style="color:#555">Medicare</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <div style="width:50px;background:#f0f4f8;border-radius:2px;height:8px;overflow:hidden;"><div style="width:25%;height:100%;background:#17A2B8;border-radius:2px;"></div></div>
+              <span style="color:#333;font-weight:600">$2.6K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    <span><span class="footer-dot"></span>Data refreshed: 3 May 2026, 09:41 AEST · Source: healthcare_analytics_dataset.csv</span>
+    <span>Page 1 of 4 · Healthcare Analytics v1.0 · Built in Power BI Desktop</span>
+  </div>
+</div>
